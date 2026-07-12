@@ -23,7 +23,7 @@ const SPARKLE_INTERVAL_MIN = 2500;
 const SPARKLE_INTERVAL_MAX = 5000;
 const SPARKLE_LIFETIME = 1600;
 
-function drawSparkle(ctx, x, y, r, rotation) {
+export function drawSparkle(ctx, x, y, r, rotation) {
   ctx.save();
   ctx.translate(x, y);
   ctx.rotate(rotation);
@@ -43,7 +43,7 @@ function drawSparkle(ctx, x, y, r, rotation) {
   ctx.restore();
 }
 
-function drawParticles(ctx, particles, w, h) {
+export function drawParticles(ctx, particles, w, h) {
   for (let i = 0; i < particles.length; i++) {
     const p = particles[i];
     p.x += p.vx;
@@ -74,7 +74,7 @@ function drawParticles(ctx, particles, w, h) {
   }
 }
 
-function computeAlpha(progress) {
+export function computeAlpha(progress) {
   const fadeIn = 0.2;
   const fadeOut = 0.5;
   if (progress < fadeIn) return progress / fadeIn;
@@ -82,7 +82,7 @@ function computeAlpha(progress) {
   return 1;
 }
 
-function drawSparkleShapes(ctx, sparkles, timestamp) {
+export function drawSparkleShapes(ctx, sparkles, timestamp) {
   for (const s of sparkles) {
     const age = timestamp - s.born;
     const progress = age / SPARKLE_LIFETIME;
@@ -109,7 +109,7 @@ function drawSparkleShapes(ctx, sparkles, timestamp) {
   ctx.globalAlpha = 1;
 }
 
-function drawStatic(ctx, particles, w, h) {
+export function drawStatic(ctx, particles, w, h) {
   ctx.clearRect(0, 0, w, h);
   for (const p of particles) {
     ctx.beginPath();

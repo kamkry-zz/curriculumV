@@ -1,7 +1,7 @@
 import html2canvas from "html2canvas";
 import { jsPDF } from "jspdf";
 
-function download(url, filename) {
+export function download(url, filename) {
   const link = document.createElement("a");
   link.href = url;
   link.download = filename;
@@ -10,7 +10,7 @@ function download(url, filename) {
   link.remove();
 }
 
-function cleanClone(el) {
+export function cleanClone(el) {
   el.style.setProperty("filter", "none", "important");
   el.style.setProperty("backdrop-filter", "none", "important");
   el.style.setProperty("-webkit-backdrop-filter", "none", "important");
