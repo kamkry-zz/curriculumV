@@ -199,8 +199,6 @@ function Background() {
       className="fixed inset-0 pointer-events-none"
       style={{ zIndex: 0 }}
       aria-hidden="true"
-      role="presentation"
-      tabIndex={-1}
     />
   );
 }
