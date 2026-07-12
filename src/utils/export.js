@@ -7,7 +7,7 @@ function download(url, filename) {
   link.download = filename;
   document.body.appendChild(link);
   link.click();
-  document.body.removeChild(link);
+  link.remove();
 }
 
 function cleanClone(el) {

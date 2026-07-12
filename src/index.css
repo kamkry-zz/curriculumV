@@ -248,6 +248,31 @@ body {
   }
 }
 
+/* ── Mobile (<830px, narrower than A4) ──────────── */
+
+@media (max-width: 830px) {
+  #cv-content {
+    width: auto !important;
+    min-height: auto !important;
+    border-radius: 0 !important;
+    border-left: none !important;
+    border-right: none !important;
+    box-shadow: none !important;
+    transform: none !important;
+    perspective: none !important;
+    transform-style: flat !important;
+  }
+}
+
+/* ── Desktop wide (≥1200px) ─────────────────────── */
+
+@media (min-width: 1200px) {
+  #cv-content {
+    width: 240mm !important;
+    min-height: 340mm !important;
+  }
+}
+
 /* ── Print ──────────────────────────────────────── */
 
 @media print {
@@ -277,4 +302,12 @@ body {
   transform-style: flat !important;
   animation: none !important;
   transition: none !important;
+}
+
+.html2canvas-capturing #cv-content {
+  width: 210mm !important;
+  min-height: 297mm !important;
+  border-radius: 16px !important;
+  border: 1px solid rgba(139, 92, 246, 0.12) !important;
+  box-shadow: none !important;
 }
