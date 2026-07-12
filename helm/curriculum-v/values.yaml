@@ -20,5 +20,5 @@ httpRoute:
   hostname: "cv.theit.cc"
   ngf:
     name: "nginx"
-    namespace: "nginx-theit-cc"
+    namespace: "nginx-gateway-fabric"
 
