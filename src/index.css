@@ -20,6 +20,10 @@
   box-sizing: border-box;
 }
 
+html {
+  overflow-x: hidden;
+}
+
 body {
   margin: 0;
   font-family: "Inter", system-ui, sans-serif;
@@ -76,7 +80,7 @@ body {
 
 @keyframes glass-sweep {
   0% {
-    left: -60%;
+    left: -35%;
     opacity: 0;
   }
   10% {
@@ -86,7 +90,7 @@ body {
     opacity: 0.6;
   }
   100% {
-    left: 120%;
+    left: 100%;
     opacity: 0;
   }
 }

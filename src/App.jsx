@@ -2,6 +2,7 @@ import { useRef, useState, useCallback } from "react";
 import CV from "./components/CV";
 import Background from "./components/Background";
 import GlassOrbs from "./components/GlassOrbs";
+import Footer from "./components/Footer";
 import { exportPDF, exportPNG, exportJPEG } from "./utils/export";
 import { load } from "js-yaml";
 import raw from "./data/resume.yaml?raw";
@@ -149,6 +150,8 @@ function App() {
             </div>
           )}
         </div>
+
+        <Footer />
 
         <div className="py-8 sm:py-10 print:py-0 flex justify-center">
           <CV ref={cvRef} data={resume} photo={photo} />
