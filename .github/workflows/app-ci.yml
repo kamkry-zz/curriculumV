@@ -206,6 +206,11 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Compute image name
+        id: image_name
+        run: |
+          echo "name=ghcr.io/${GITHUB_REPOSITORY,,}:${{ steps.image_tag.outputs.tag }}" >> "$GITHUB_OUTPUT"
+
       - uses: docker/build-push-action@v6
         with:
           context: ${{ inputs.build_context }}
@@ -213,8 +218,7 @@ jobs:
           push: true
           build-args: |
             PHONE_NUMBER=${{ vars.PHONE_NUMBER }}
-          tags: |
-            ghcr.io/${{ github.repository }}:${{ steps.image_tag.outputs.tag }}
+          tags: ${{ steps.image_name.outputs.name }}
 
   # ----------------------------------------------------------------------- #
   # Aggregate all fragments into a single PR comment
@@ -305,9 +309,14 @@ jobs:
     needs: docker
     if: needs.docker.result == 'success'
     steps:
+      - name: Compute image ref
+        id: image_ref
+        run: |
+          echo "ref=ghcr.io/${GITHUB_REPOSITORY,,}:${{ needs.docker.outputs.image_tag }}" >> "$GITHUB_OUTPUT"
+
       - uses: aquasecurity/trivy-action@v0.36.0
         with:
-          image-ref: ghcr.io/${{ github.repository }}:${{ needs.docker.outputs.image_tag }}
+          image-ref: ${{ steps.image_ref.outputs.ref }}
           format: table
           output: trivy-image.txt
           severity: CRITICAL,HIGH
