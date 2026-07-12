@@ -24,7 +24,7 @@ spec:
                     operator: DoesNotExist
       containers:
         - name: {{ .Values.name }}
-          image: ghcr.io/<your-username>/curriculum-v:{{ .Values.imageTag }}
+          image: ghcr.io/kamkry-zz/curriculumv:{{ .Values.imageTag }}
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
