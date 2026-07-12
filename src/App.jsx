@@ -118,13 +118,12 @@ function App() {
                     disabled={exporting !== null}
                     onClick={() => handleExport(type)}
                     className={`${btnBase} ${
-                      exporting !== null
+                      exporting
                         ? "opacity-40 cursor-not-allowed"
                         : "hover:scale-105 hover:-translate-y-px"
                     }`}
                     style={{
                       ...(isPrimary ? primaryBtn : glassBtn),
-                      ...(exporting !== null ? {} : {}),
                     }}
                   >
                     {exporting === type

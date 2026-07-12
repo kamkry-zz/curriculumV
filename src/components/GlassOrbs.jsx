@@ -1,6 +1,7 @@
 function GlassOrbs() {
   const orbs = [
     {
+      id: "orb-1",
       size: 420,
       x: "15%",
       y: "20%",
@@ -9,6 +10,7 @@ function GlassOrbs() {
       blur: 90,
     },
     {
+      id: "orb-2",
       size: 340,
       x: "78%",
       y: "15%",
@@ -17,6 +19,7 @@ function GlassOrbs() {
       blur: 80,
     },
     {
+      id: "orb-3",
       size: 280,
       x: "60%",
       y: "65%",
@@ -25,6 +28,7 @@ function GlassOrbs() {
       blur: 70,
     },
     {
+      id: "orb-4",
       size: 220,
       x: "25%",
       y: "70%",
@@ -33,6 +37,7 @@ function GlassOrbs() {
       blur: 60,
     },
     {
+      id: "orb-5",
       size: 180,
       x: "50%",
       y: "35%",
@@ -48,9 +53,9 @@ function GlassOrbs() {
       style={{ zIndex: 0 }}
       aria-hidden="true"
     >
-      {orbs.map((orb, i) => (
+      {orbs.map((orb) => (
         <div
-          key={i}
+          key={orb.id}
           className={`absolute rounded-full ${orb.anim}`}
           style={{
             width: orb.size,

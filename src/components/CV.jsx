@@ -1,4 +1,5 @@
 import { useRef, useEffect } from "react";
+import PropTypes from "prop-types";
 import gsap from "gsap";
 
 const SectionTitle = ({ children, index = 0 }) => (
@@ -50,7 +51,7 @@ function CV({ data, photo, ref: externalRef }) {
     const el = cvRef.current;
     if (!el) return;
 
-    const prefersReduced = window.matchMedia(
+    const prefersReduced = globalThis.matchMedia(
       "(prefers-reduced-motion: reduce)"
     ).matches;
     if (prefersReduced) return;
@@ -96,7 +97,7 @@ function CV({ data, photo, ref: externalRef }) {
     const el = nameRef.current;
     if (!el) return;
 
-    const prefersReduced = window.matchMedia(
+    const prefersReduced = globalThis.matchMedia(
       "(prefers-reduced-motion: reduce)"
     ).matches;
     if (prefersReduced) return;
@@ -379,7 +380,7 @@ function CV({ data, photo, ref: externalRef }) {
                 const dot = DOT_PALETTE[i % DOT_PALETTE.length];
                 return (
                 <div
-                  key={i}
+                  key={`${exp.company}-${exp.start}`}
                   className="animate-in"
                   style={{ animationDelay: `${500 + i * 120}ms` }}
                 >
@@ -452,7 +453,7 @@ function CV({ data, photo, ref: externalRef }) {
             <div className="space-y-3">
               {data.education.map((edu, i) => (
                 <div
-                  key={i}
+                  key={`${edu.degree}-${edu.school}`}
                   className="animate-in glass-panel flex justify-between items-baseline"
                   style={{ animationDelay: `${700 + i * 100}ms` }}
                 >
@@ -484,7 +485,7 @@ function CV({ data, photo, ref: externalRef }) {
             <div className="flex flex-wrap gap-2">
               {data.skills.map((skill, i) => (
                 <span
-                  key={i}
+                  key={skill}
                   className="animate-in glass-tag text-xs font-medium font-mono cursor-default"
                   style={{ animationDelay: `${800 + i * 50}ms` }}
                 >
@@ -505,7 +506,7 @@ function CV({ data, photo, ref: externalRef }) {
             >
               {data.languages.map((lang, i) => (
                 <span
-                  key={i}
+                  key={lang.language}
                   className="glass-panel inline-block"
                   style={{ animationDelay: `${1050 + i * 80}ms` }}
                 >
@@ -523,7 +524,7 @@ function CV({ data, photo, ref: externalRef }) {
             <div className="flex flex-wrap gap-2">
               {data.interests.map((item, i) => (
                 <span
-                  key={i}
+                  key={item}
                   className="animate-in glass-tag text-xs font-medium font-mono cursor-default"
                   style={{ animationDelay: `${1100 + i * 60}ms` }}
                 >
@@ -537,5 +538,19 @@ function CV({ data, photo, ref: externalRef }) {
     </div>
   );
 }
+
+SectionTitle.propTypes = {
+  children: PropTypes.node.isRequired,
+  index: PropTypes.number,
+};
+
+CV.propTypes = {
+  data: PropTypes.object.isRequired,
+  photo: PropTypes.string,
+  ref: PropTypes.oneOfType([
+    PropTypes.func,
+    PropTypes.shape({ current: PropTypes.any }),
+  ]),
+};
 
 export default CV;
