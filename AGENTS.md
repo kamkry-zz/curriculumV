@@ -69,6 +69,12 @@ Defined in `src/index.css`. Custom tokens: `canvas` (#09090b), `surface` (#13131
 ### Export Blocks
 Elements marked with `data-export-block` in CV.jsx are captured individually for PDF: header, summary, each experience item, education, skills, languages, interests. Adding/removing sections requires updating these attributes.
 
+## Quality Gates (pre-commit)
+
+- **🧪 Test coverage is mandatory for all new code.** Every new component, function, or branch must have corresponding tests. Run `npm test` and `npm run test:coverage` before committing.
+- **🔍 SonarQube issues must be checked and fixed before commit.** Use the `sonarqube-mcp` tools to inspect `new_code` issues on the PR branch. No unresolved SQ issues (bugs, vulnerabilities, code smells) should remain.
+- **✅ `npm run lint` must pass with 0 warnings.**
+
 ## Conventions
 
 - **Inline styles** for colors/effects (not Tailwind utility classes) — html2canvas compatibility

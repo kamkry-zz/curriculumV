@@ -17,7 +17,7 @@ const CAPTURE_OPTS = {
   allowTaint: false,
 };
 
-function prepareClone(clonedDoc) {
+export function prepareClone(clonedDoc) {
   cleanClone(clonedDoc.body);
   const cv = clonedDoc.getElementById("cv-content");
   if (cv) {
