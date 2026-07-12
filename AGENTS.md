@@ -80,3 +80,10 @@ Elements marked with `data-export-block` in CV.jsx are captured individually for
 ## CI/CD
 
 Workflow: `.github/workflows/ci.yml` calls reusable `app-ci.yml`. On PR: lint-helm → build → sonarqube → trivy FS → AI summary → aggregate PR comment. On push to main: same + Docker build/push + Trivy image scan. ArgoCD auto-syncs Helm chart from repo.
+
+## Versioning & PR Rules
+
+- **🏷️ Bump `imageTag`** in `helm/curriculum-v/values.yaml` whenever app code changes (`src/`, `Dockerfile`, `package.json`, `pyproject.toml`). The CI Docker push uses this tag.
+- **✅ Tag bump NOT required** when only Helm/K8s configs change (`helm/`, `.github/`).
+- **🔒 Every change must come via a PR** — no direct pushes to `main`.
+- On merge to `main`, CI builds and pushes `ghcr.io/<owner>/curriculum-v:<imageTag>` + `:latest`, ArgoCD syncs automatically.

@@ -30,7 +30,7 @@ jobs:
 
       - name: Run Trivy image scan
         if: inputs.image_ref != ''
-        uses: aquasecurity/trivy-action@0.36.0
+        uses: aquasecurity/trivy-action@v0.36.0
         env:
           TRIVY_DISABLE_VEX_NOTICE: "true"
         with:
@@ -43,7 +43,7 @@ jobs:
 
       - name: Run Trivy filesystem scan
         if: inputs.scan_fs
-        uses: aquasecurity/trivy-action@0.36.0
+        uses: aquasecurity/trivy-action@v0.36.0
         env:
           TRIVY_DISABLE_VEX_NOTICE: "true"
         with:
