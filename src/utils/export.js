@@ -10,6 +10,23 @@ export function download(url, filename) {
   link.remove();
 }
 
+const CAPTURE_OPTS = {
+  scale: 2,
+  useCORS: true,
+  backgroundColor: "#131318",
+  allowTaint: false,
+};
+
+export function prepareClone(clonedDoc) {
+  cleanClone(clonedDoc.body);
+  const cv = clonedDoc.getElementById("cv-content");
+  if (cv) {
+    cv.style.width = "210mm";
+    cv.style.maxWidth = "210mm";
+    cv.style.overflow = "visible";
+  }
+}
+
 export function cleanClone(el) {
   el.style.setProperty("filter", "none", "important");
   el.style.setProperty("backdrop-filter", "none", "important");
@@ -34,24 +51,18 @@ export function cleanClone(el) {
 
 async function captureBlock(el) {
   return html2canvas(el, {
-    scale: 2,
-    useCORS: true,
-    backgroundColor: "#131318",
-    allowTaint: false,
+    ...CAPTURE_OPTS,
     onclone(clonedDoc) {
-      cleanClone(clonedDoc.body);
+      prepareClone(clonedDoc);
     },
   });
 }
 
 export async function exportPNG(element) {
   const canvas = await html2canvas(element, {
-    scale: 2,
-    useCORS: true,
-    backgroundColor: "#131318",
-    allowTaint: false,
+    ...CAPTURE_OPTS,
     onclone(clonedDoc) {
-      cleanClone(clonedDoc.body);
+      prepareClone(clonedDoc);
     },
   });
   download(canvas.toDataURL("image/png"), "resume.png");
@@ -59,12 +70,9 @@ export async function exportPNG(element) {
 
 export async function exportJPEG(element) {
   const canvas = await html2canvas(element, {
-    scale: 2,
-    useCORS: true,
-    backgroundColor: "#131318",
-    allowTaint: false,
+    ...CAPTURE_OPTS,
     onclone(clonedDoc) {
-      cleanClone(clonedDoc.body);
+      prepareClone(clonedDoc);
     },
   });
   download(canvas.toDataURL("image/jpeg", 0.92), "resume.jpg");

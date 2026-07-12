@@ -143,8 +143,10 @@ function CV({ data, photo, ref: externalRef }) {
       id="cv-content"
       className="mx-auto relative print:shadow-none print:mx-0 print:w-full print:min-h-0"
       style={{
-        width: "210mm",
+        width: "100%",
+        maxWidth: "210mm",
         minHeight: "297mm",
+        overflow: "hidden",
         color: "#fafafa",
         fontFamily: "'Inter', system-ui, sans-serif",
         perspective: "1200px",

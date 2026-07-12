@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, afterEach } from "vitest";
-import { download, cleanClone } from "./export.js";
+import { download, cleanClone, prepareClone } from "./export.js";
 
 describe("download", () => {
   afterEach(() => {
@@ -60,5 +60,37 @@ describe("cleanClone", () => {
     el.style.background = "rgb(255, 0, 0)";
     cleanClone(el);
     expect(el.style.background).toBe("rgb(255, 0, 0)");
+  });
+});
+
+describe("prepareClone", () => {
+  it("sets cv-content width to 210mm when element exists", () => {
+    const doc = document.implementation.createHTMLDocument();
+    const cv = doc.createElement("div");
+    cv.id = "cv-content";
+    doc.body.appendChild(cv);
+
+    prepareClone(doc);
+
+    expect(cv.style.width).toBe("210mm");
+    expect(cv.style.maxWidth).toBe("210mm");
+    expect(cv.style.overflow).toBe("visible");
+  });
+
+  it("does not throw when cv-content is missing", () => {
+    const doc = document.implementation.createHTMLDocument();
+
+    expect(() => prepareClone(doc)).not.toThrow();
+  });
+
+  it("calls cleanClone on the body", () => {
+    const doc = document.implementation.createHTMLDocument();
+    const child = doc.createElement("div");
+    child.style.filter = "blur(5px)";
+    doc.body.appendChild(child);
+
+    prepareClone(doc);
+
+    expect(child.style.filter).toBe("none");
   });
 });
