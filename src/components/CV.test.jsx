@@ -9,40 +9,27 @@ const minimalData = {
   interests: ["Coding"],
 };
 
-afterEach(() => {
-  cleanup();
-});
+afterEach(() => cleanup());
 
 function renderCV(props = {}) {
   return render(<CV data={minimalData} {...props} />);
 }
 
+const presenceCases = [
+  ["name", "Test User"],
+  ["title", "Engineer"],
+  ["Skills section", "Skills"],
+  ["Interests section", "Interests"],
+  ["skill React", "React"],
+  ["skill Docker", "Docker"],
+  ["interest Coding", "Coding"],
+  ["initials", "TU"],
+];
+
 describe("CV", () => {
-  it("renders the name", () => {
+  it.each(presenceCases)("renders %s", (_, text) => {
     renderCV();
-    expect(screen.getByText("Test User")).toBeTruthy();
-  });
-
-  it("renders the title", () => {
-    renderCV();
-    expect(screen.getByText("Engineer")).toBeTruthy();
-  });
-
-  it("renders skills as tags", () => {
-    renderCV();
-    expect(screen.getByText("React")).toBeTruthy();
-    expect(screen.getByText("Docker")).toBeTruthy();
-  });
-
-  it("renders interests", () => {
-    renderCV();
-    expect(screen.getByText("Coding")).toBeTruthy();
-  });
-
-  it("renders section titles", () => {
-    renderCV();
-    expect(screen.getByText("Skills")).toBeTruthy();
-    expect(screen.getByText("Interests")).toBeTruthy();
+    expect(screen.getByText(text)).toBeTruthy();
   });
 
   it("does not render optional sections when data is missing", () => {
@@ -52,17 +39,11 @@ describe("CV", () => {
     expect(screen.queryByText("Education")).toBeNull();
   });
 
-  it("renders initials when no photo provided", () => {
-    renderCV();
-    expect(screen.getByText("TU")).toBeTruthy();
-  });
-
   it("renders photo when provided", () => {
     renderCV({
       photo:
         "data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==",
     });
-    const photo = document.querySelector('[role="img"]');
-    expect(photo).toBeTruthy();
+    expect(document.querySelector('[role="img"]')).toBeTruthy();
   });
 });
