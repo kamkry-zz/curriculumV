@@ -1,0 +1,147 @@
+name: Kamil Krysiak
+title: DevOps / Platform Engineer
+email: kamkry18@gmail.com
+phone: "+48 606 749 841"
+location: Łódź, Poland
+github: https://github.com/kamkry-zz
+linkedin: https://www.linkedin.com/in/kamil-krysiak-b4283864/
+patents: https://worldwide.espacenet.com/patent/search?q=nftxt%20%3D%20%22krysiak%20kamil%22%20AND%20pa%20%3D%20%22politechnika%20lodzka%22
+
+summary: >-
+  DevOps engineer with 5+ years of experience designing and operating
+  cloud-native, on-premise and hybrid infrastructure. Focused on Kubernetes, CI/CD pipelines,
+  Infrastructure as Code, and observability. Passionate about automation,
+  reliability, clever networking and empowering development teams with self-service platforms.
+
+experience:
+  - title: Senior DevOps/Integration Engineer
+    company: Idemia Poland
+    location: Łódź, Poland
+    start: Jun 2025
+    end: Present
+    highlights:
+      - >-
+        Been working in IoT and Payments domain, integrating customer infrastructure with Idemia's cloud (Azure) platform, including k8s deployments,
+        networking/firewall configuration and conducting smoke tests for eUICC and eSIM provisioning.
+      - >-
+        In payments domain, I've been responsible for the on-premise and cloud (Azure) infrastructure for Idemia's payments platform.
+        Managed VMs (orchestrated by Ansible), k8s clusters (on-prem and AKS, Terraform managed) and CI (Jenkins) pipelines for multiple services.
+      - >-
+        Implementing GitOps with ArgoCD and Crossplane, achieving fully
+        declarative infrastructure with security compliance in mind (using Trivy and SonarQube for scanning).
+      - >-
+        Been introducing DORA (DevOps Research and Assessment) framework to improve DevOps maturity of the organization, including metrics collection and reporting.
+
+  - title: Senior DevOps Engineer
+    company: Netminds DK
+    location: Gdańsk (remote), Poland
+    start: Aug 2023
+    end: Jun 2025
+    highlights:
+      - >-
+        Extending and maintaing CI/CD process (Azure DevOps) for a large-scale, multi-tenant SaaS platform, including automated testing, deployment and monitoring
+      - >-
+        Integrated SAST/SCA analysis into deployment lifecycle, improving code quality and security posture. Also been actively implementing
+        OWASP SAMM and took over the security champion role for the team, providing guidance and training on secure coding practices.
+      - >-
+        Implemented set of health probes in deployment process, that automatically detect and react to faulty deployments, reducing downtime and improving reliability of the platform.
+
+  - title: DevOps Engineer
+    company: mBank S.A.
+    location: Łódź, Poland
+    start: Mar 2023
+    end: Aug 2023
+    highlights:
+      - >-
+        Supported the bank’s technological transformation by implementing cloud-native solutions, including Kubernetes, CI/CD pipelines, and Infrastructure as Code.
+      - >-
+        Led the migration of IIS-hosted applications to containerized environments, improving scalability and maintainability of the bank's services.
+      - >-
+        Been developing CI (in Teamcity, using Kotlin DSL) and CD (in Azure DevOps) pipelines for multiple applications, ensuring smooth and efficient deployment processes.
+      - >-
+        Conducted workshops and training sessions for development teams, promoting best practices in DevOps and cloud-native technologies with live demos and hands-on exercises.
+  
+  - title: DevOps Engineer
+    company: Fujitsu Poland
+    location: Łódź, Poland
+    start: May 2021
+    end: Feb 2023
+    highlights:
+      - >-
+        I've been managing the on-prem cloud (vSphere, Proxmox) and container hosts (ESXi, Docker, Podman)
+      - >-
+        Implemented and maintained CI/CD pipelines (GitHub Actions, Jenkins, GitLab CI) for multiple applications, ensuring smooth and efficient deployment processes.
+      - >-
+        Designed and deployed SAN storage solutions (FC, FCoE, iSCSI) with PXE/iPXE provisioning and automated OS installation (Kickstart, Preseed) for multiple Linux distributions.
+      - >-
+        Migrated old VMs/physical servers to containers (Docker, Podman).
+      - >-
+        Managed vulnerabilities scanning (Mend) and code analysis (SonarQube).
+      - >-
+        Created internal documentation for C5 and GxP certifications in ServiceHub cloud (DE).
+
+  - title: Junior Software Engineer
+    company: Cybercom Poland
+    location: Łódź, Poland
+    start: Aug 2020
+    end: Apr 2021
+    highlights:
+      - >-
+        I've been providing support to the QA team in LTE/5G network simulator project, including bug fixing and PHY and MAC layer investigration.
+      - >-
+        Troubleshooting the radio-link and core network issues in the simulator, including analysis of IoT device behavior(CAT-M and NB-IoT) and VoLTE traffic.
+      - >-
+        Implemented few simple Python and Ruby scripts to automate the testing process and make configurations insensitive to user error/misconfiguration.
+
+  - title: Product Manager
+    company: Politechnika Łódzka
+    location: Łódź, Poland
+    start: Feb 2019
+    end: Aug 2020
+    highlights:
+      - >-
+        I've been leading a team of sales and marketing specialists, responsible for the development and promotion of spectroscopy devices and solutions.
+      - >-
+        Developed analytical methods for Raman and NIRS spectroscopy, tailored to the needs of the customers, and provided training and support for their implementation.
+      - >-
+        Conducted a thorough, complete development of illicit drugs and combat warfare agents detection methods, including sample preparation, measurement and data analysis, resulting in a comprehensive solution for Polish Police and Anti-terrorist Units.
+
+education:
+  - degree: B.Sc. Nanotechnology and Nanomaterials
+    school: Politechnika Łódzka
+    year: "2012"
+
+  - degree: M.Sc. Chemical Technology and Engineering
+    school: Politechnika Łódzka
+    year: "2014"
+
+skills:
+  - Kubernetes
+  - Docker
+  - Azure / AKS
+  - Terraform
+  - ArgoCD
+  - GitHub Actions, Jenkins, Azure DevOps, TeamCity
+  - Helm
+  - Grafana / Prometheus
+  - Ansible
+  - Python / Bash / PowerShell
+  - Virtualization (vSphere, Proxmox, Hyper-V)
+  - Hardware (including microcontrollers, sensors, and embedded systems)
+  - Networking (TCP/IP, VLANs, VPNs, Firewalls)
+  - DB administration (PostgreSQL, MySQL, MSSQL)
+  - Linux, Windows
+  - GitOps
+
+languages:
+  - language: Polish
+    level: Native
+  - language: English
+    level: Fluent (C1)
+
+interests:
+  - Homelab / Self-hosting
+  - Automation
+  - Ham Radio (callsign HF7CATS)
+  - Sailing
+  - Snowboarding

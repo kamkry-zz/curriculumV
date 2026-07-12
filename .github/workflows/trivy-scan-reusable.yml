@@ -1,0 +1,131 @@
+name: Trivy Scan Reusable
+
+on:
+  workflow_call:
+    inputs:
+      image_ref:
+        description: 'Docker image reference to scan'
+        required: false
+        type: string
+        default: ''
+      scan_fs:
+        description: 'Run a filesystem scan for dependency CVEs'
+        required: false
+        type: boolean
+        default: false
+      app_dir:
+        description: 'Directory to scan when scan_fs is true'
+        required: false
+        type: string
+        default: '.'
+
+jobs:
+  trivy:
+    name: Trivy Security Scan
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run Trivy image scan
+        if: inputs.image_ref != ''
+        uses: aquasecurity/trivy-action@v0.36.0
+        env:
+          TRIVY_DISABLE_VEX_NOTICE: "true"
+        with:
+          image-ref: ${{ inputs.image_ref }}
+          format: table
+          output: trivy-image.txt
+          severity: CRITICAL,HIGH
+          ignore-unfixed: true
+          exit-code: "0"
+
+      - name: Run Trivy filesystem scan
+        if: inputs.scan_fs
+        uses: aquasecurity/trivy-action@v0.36.0
+        env:
+          TRIVY_DISABLE_VEX_NOTICE: "true"
+        with:
+          scan-type: fs
+          scan-ref: ${{ inputs.app_dir }}
+          format: table
+          output: trivy-fs.txt
+          severity: CRITICAL,HIGH
+          ignore-unfixed: true
+          exit-code: "0"
+
+      - name: Compose Trivy fragment
+        if: always()
+        run: |
+          set -euo pipefail
+          mkdir -p report
+          out=report/trivy.md
+
+          has_findings() {
+            [ -s "$1" ] && grep -qE '│ (CRITICAL|HIGH) ' "$1"
+          }
+
+          image_status="➖ Skipped"
+          fs_status="➖ Skipped"
+
+          if [ -f trivy-image.txt ]; then
+            image_status="✅ Clean"
+            has_findings trivy-image.txt && image_status="⚠️ Findings"
+          fi
+
+          if [ -f trivy-fs.txt ]; then
+            fs_status="✅ Clean"
+            has_findings trivy-fs.txt && fs_status="⚠️ Findings"
+          fi
+
+          {
+            echo "### 🛡️ Trivy Security Scan"
+            echo
+            echo "| Scan | Target | Status |"
+            echo "|------|--------|--------|"
+            if [ -f trivy-image.txt ]; then
+              echo "| Image | \`${{ inputs.image_ref }}\` | ${image_status} |"
+            fi
+            if [ "${{ inputs.scan_fs }}" = "true" ]; then
+              echo "| Filesystem | \`${{ inputs.app_dir }}\` | ${fs_status} |"
+            fi
+            echo
+            echo "_Scope: CRITICAL/HIGH, fixable only._"
+            echo
+          } > "$out"
+
+          if [ "$image_status" = "⚠️ Findings" ]; then
+            {
+              echo "<details><summary>⚠️ Image findings</summary>"
+              echo
+              echo '```'
+              cat trivy-image.txt
+              echo '```'
+              echo
+              echo "</details>"
+              echo
+            } >> "$out"
+          fi
+
+          if [ "$fs_status" = "⚠️ Findings" ]; then
+            {
+              echo "<details><summary>⚠️ Filesystem findings</summary>"
+              echo
+              echo '```'
+              cat trivy-fs.txt
+              echo '```'
+              echo
+              echo "</details>"
+              echo
+            } >> "$out"
+          fi
+
+      - name: Upload Trivy fragment
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pr-report-trivy
+          path: report/trivy.md
+          if-no-files-found: warn
+          retention-days: 1

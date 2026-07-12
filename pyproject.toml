@@ -1,0 +1,16 @@
+[project]
+name = "curriculum-v"
+authors = [
+    { name = "Kamil Krysiak", email = "kamkry18@gmail.com" }
+]
+version = "1.0.0"
+description = "Interactive CV — single-page web application with PDF/PNG/JPEG export"
+requires-python = ">=3.14"
+dependencies = [
+    "fastapi>=0.139.0",
+    "uvicorn[standard]>=0.51.0",
+]
+
+[build-system]
+requires = ["setuptools>=75.0"]
+build-backend = "setuptools.build_meta"
