@@ -1,0 +1,362 @@
+name: App CI Reusable
+
+on:
+  workflow_call:
+    inputs:
+      app:
+        description: 'App name (used in PR comment title)'
+        required: true
+        type: string
+      dockerfile:
+        description: 'Path to the Dockerfile'
+        required: false
+        type: string
+        default: 'Dockerfile'
+      build_context:
+        description: 'Docker build context'
+        required: false
+        type: string
+        default: '.'
+      helm_chart:
+        description: 'Path to the Helm chart directory'
+        required: false
+        type: string
+        default: 'helm/curriculum-v'
+      sonar_sources:
+        description: 'Comma-separated list of source directories for SonarQube'
+        required: false
+        type: string
+        default: 'src,app.py'
+      push_image:
+        description: 'Whether to build and push the Docker image'
+        required: false
+        type: boolean
+        default: false
+
+env:
+  SONAR_PROJECT_KEY: curriculum-v
+
+jobs:
+  # ----------------------------------------------------------------------- #
+  # Helm lint
+  # ----------------------------------------------------------------------- #
+  lint-helm:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: azure/setup-helm@v4
+        with:
+          version: latest
+      - run: helm lint ${{ inputs.helm_chart }}
+
+  # ----------------------------------------------------------------------- #
+  # Build
+  # ----------------------------------------------------------------------- #
+  build:
+    runs-on: ubuntu-latest
+    needs: lint-helm
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Inject phone number from GH variable
+        if: ${{ vars.PHONE_NUMBER != '' }}
+        run: |
+          sed -i "s|phone:.*|phone: \"$PHONE_NUMBER\"|" src/data/resume.yaml
+        env:
+          PHONE_NUMBER: ${{ vars.PHONE_NUMBER }}
+
+      - run: npm ci
+      - run: npm run build
+
+  # ----------------------------------------------------------------------- #
+  # SonarQube scan + quality gate + fragment
+  # ----------------------------------------------------------------------- #
+  sonarqube:
+    runs-on: ubuntu-latest
+    needs: build
+    env:
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: SonarQube Scan
+        id: scan
+        continue-on-error: true
+        uses: sonarsource/sonarqube-scan-action@v5
+        with:
+          args: >
+            -Dsonar.projectKey=${{ env.SONAR_PROJECT_KEY }}
+            -Dsonar.sources=${{ inputs.sonar_sources }}
+
+      - name: Read Sonar quality gate status
+        id: gate
+        if: steps.scan.outcome == 'success'
+        run: |
+          set -euo pipefail
+          host="${SONAR_HOST_URL%/}"
+          report_task=".scannerwork/report-task.txt"
+          ce_task_id=$(grep '^ceTaskId=' "$report_task" 2>/dev/null | cut -d'=' -f2- || true)
+          if [ -z "$ce_task_id" ]; then exit 0; fi
+          for _ in $(seq 1 30); do
+            ce_json=$(curl -sS -u "${SONAR_TOKEN}:" "${host}/api/ce/task?id=${ce_task_id}" || echo '{}')
+            ce_status=$(echo "$ce_json" | jq -r '.task.status // "UNKNOWN"')
+            if [ "$ce_status" = "SUCCESS" ]; then
+              analysis_id=$(echo "$ce_json" | jq -r '.task.analysisId // ""')
+              echo "analysis_id=${analysis_id}" >> "$GITHUB_OUTPUT"
+              break
+            fi
+            if [ "$ce_status" = "FAILED" ] || [ "$ce_status" = "CANCELED" ]; then
+              echo "status=ERROR" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+            sleep 5
+          done
+          if [ -n "${analysis_id:-}" ]; then
+            gate=$(curl -sS -u "${SONAR_TOKEN}:" \
+              "${host}/api/qualitygates/project_status?analysisId=${analysis_id}" || echo '{}')
+          else
+            gate=$(curl -sS -u "${SONAR_TOKEN}:" \
+              "${host}/api/qualitygates/project_status?projectKey=${SONAR_PROJECT_KEY}" || echo '{}')
+          fi
+          status=$(echo "$gate" | jq -r '.projectStatus.status // "UNKNOWN"')
+          echo "status=${status}" >> "$GITHUB_OUTPUT"
+
+      - name: Compose Sonar fragment
+        if: always()
+        env:
+          SCAN_OUTCOME: ${{ steps.scan.outcome }}
+          GATE_STATUS: ${{ steps.gate.outputs.status }}
+        run: |
+          set -euo pipefail
+          mkdir -p report
+          out=report/sonar.md
+
+          if [ "$SCAN_OUTCOME" = "failure" ] || [ -z "${SONAR_TOKEN:-}" ] || [ -z "${SONAR_HOST_URL:-}" ]; then
+            {
+              echo "### 🧭 SonarQube"
+              echo
+              echo "⚠️ SonarQube service was unavailable (auth missing, host unreachable, or scan error)."
+            } > "$out"
+            exit 0
+          fi
+
+          host="${SONAR_HOST_URL%/}"
+          metric_keys="bugs,vulnerabilities,code_smells,security_hotspots,coverage,duplicated_lines_density"
+          measures=$(curl -sS -u "${SONAR_TOKEN}:" \
+            "${host}/api/measures/component?component=${SONAR_PROJECT_KEY}&metricKeys=${metric_keys}" || echo '{}')
+          gate_status="${GATE_STATUS:-UNKNOWN}"
+          case "$gate_status" in
+            OK) gate_emoji="✅ Passed" ;;
+            ERROR) gate_emoji="❌ Failed" ;;
+            *) gate_emoji="❔ Unknown" ;;
+          esac
+
+          val() { echo "$measures" | jq -r --arg k "$1" '(.component.measures[]? | select(.metric==$k) | .value) // "—"'; }
+
+          {
+            echo "### 🧭 SonarQube"
+            echo
+            echo "**Quality Gate:** ${gate_emoji}"
+            echo
+            echo "| Metric | Value |"
+            echo "|--------|-------|"
+            echo "| 🐞 Bugs | $(val bugs) |"
+            echo "| 🔓 Vulnerabilities | $(val vulnerabilities) |"
+            echo "| 🌫️ Code Smells | $(val code_smells) |"
+            echo "| 🔥 Security Hotspots | $(val security_hotspots) |"
+            echo "| 🧪 Coverage | $(val coverage)% |"
+            echo "| 📑 Duplication | $(val duplicated_lines_density)% |"
+            echo
+            echo "[Open project in SonarQube](${host}/dashboard?id=${SONAR_PROJECT_KEY})"
+          } > "$out"
+
+      - name: Upload Sonar fragment
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pr-report-sonar
+          path: report/sonar.md
+          if-no-files-found: warn
+          retention-days: 1
+
+      - name: Mark SonarQube job success (unavailability is non-blocking)
+        if: always()
+        run: exit 0
+
+  # ----------------------------------------------------------------------- #
+  # Trivy filesystem scan (always) + image scan (when push_image is true)
+  # ----------------------------------------------------------------------- #
+  trivy:
+    needs: [build]
+    if: needs.build.result == 'success'
+    uses: ./.github/workflows/trivy-scan-reusable.yml
+    with:
+      image_ref: ${{ inputs.push_image && format('ghcr.io/{0}/{1}:{2}', github.repository_owner, github.event.repository.name, github.sha) || '' }}
+      scan_fs: true
+      app_dir: ${{ inputs.build_context }}
+    secrets: inherit
+
+  # ----------------------------------------------------------------------- #
+  # AI review -> fragment artifact (self-hosted vLLM)
+  # ----------------------------------------------------------------------- #
+  ai_summary:
+    if: github.event_name == 'pull_request'
+    uses: ./.github/workflows/pr-ai-summary-reusable.yml
+    with:
+      pr_number: ${{ github.event.pull_request.number }}
+      repository: ${{ github.repository }}
+    secrets: inherit
+
+  # ----------------------------------------------------------------------- #
+  # Docker build + push (only when push_image is true)
+  # ----------------------------------------------------------------------- #
+  docker:
+    runs-on: ubuntu-latest
+    needs: [build, sonarqube]
+    if: inputs.push_image
+    permissions:
+      packages: write
+    outputs:
+      image_tag: ${{ steps.image_tag.outputs.tag }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Read image tag from values.yaml
+        id: image_tag
+        run: |
+          tag=$(grep 'imageTag:' "${{ inputs.helm_chart }}/values.yaml" | sed -n 's/.*imageTag:\s*"\([^"]*\)".*/\1/p')
+          echo "tag=${tag:-latest}" >> "$GITHUB_OUTPUT"
+
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: docker/build-push-action@v6
+        with:
+          context: ${{ inputs.build_context }}
+          file: ${{ inputs.dockerfile }}
+          push: true
+          tags: |
+            ghcr.io/${{ github.repository }}:${{ steps.image_tag.outputs.tag }}
+            ghcr.io/${{ github.repository }}:latest
+
+  # ----------------------------------------------------------------------- #
+  # Aggregate all fragments into a single PR comment
+  # ----------------------------------------------------------------------- #
+  report:
+    needs: [lint-helm, build, sonarqube, trivy, ai_summary]
+    if: always() && github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+      issues: write
+    steps:
+      - name: Download report fragments
+        uses: actions/download-artifact@v4
+        continue-on-error: true
+        with:
+          pattern: pr-report-*
+          path: report
+          merge-multiple: true
+
+      - name: Compose and post single PR comment
+        uses: actions/github-script@v7
+        env:
+          APP: ${{ inputs.app }}
+          R_HELM: ${{ needs.lint-helm.result }}
+          R_BUILD: ${{ needs.build.result }}
+          R_SONAR: ${{ needs.sonarqube.result }}
+          R_TRIVY: ${{ needs.trivy.result }}
+          R_AI: ${{ needs.ai_summary.result }}
+        with:
+          script: |
+            const fs = require('fs');
+            const app = process.env.APP;
+            const marker = `<!-- pr-ci-report:${app} -->`;
+
+            const read = (p) => { try { return fs.readFileSync(p, 'utf8').trim(); } catch { return ''; } };
+
+            const statusEmoji = (r) => ({
+              success: '✅ Passed',
+              failure: '❌ Failed',
+              cancelled: '⏹️ Cancelled',
+              skipped: '➖ Skipped',
+            }[r] || `➖ ${r || 'n/a'}`);
+
+            const rows = [
+              ['📋 Helm Lint', process.env.R_HELM],
+              ['📦 Build', process.env.R_BUILD],
+              ['🧭 SonarQube', process.env.R_SONAR],
+              ['🛡️ Trivy', process.env.R_TRIVY],
+              ['🤖 AI Review', process.env.R_AI],
+            ];
+            let statusTable = '| Stage | Result |\n|-------|--------|\n';
+            for (const [name, res] of rows) statusTable += `| ${name} | ${statusEmoji(res)} |\n`;
+
+            const ai = read('report/ai.md');
+            const sonar = read('report/sonar.md');
+            const trivy = read('report/trivy.md');
+
+            let body = `${marker}\n## 🤖 CI Report — \`${app}\`\n\n${statusTable}\n`;
+            if (ai) body += `\n<details open><summary><b>🤖 AI Review</b></summary>\n\n${ai}\n\n</details>\n`;
+            if (sonar) body += `\n${sonar}\n`;
+            if (trivy) body += `\n${trivy}\n`;
+            body += `\n<sub>🔄 Auto-updated on every push to this PR.</sub>`;
+
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+            const existing = comments.find(c => c.body && c.body.includes(marker));
+
+            if (existing) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: existing.id,
+                body,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body,
+              });
+            }
+
+  # ----------------------------------------------------------------------- #
+  # Trivy image scan (separate, after docker push on main)
+  # ----------------------------------------------------------------------- #
+  trivy-image-post-push:
+    runs-on: ubuntu-latest
+    needs: docker
+    if: inputs.push_image && needs.docker.result == 'success'
+    steps:
+      - uses: aquasecurity/trivy-action@0.36.0
+        with:
+          image-ref: ghcr.io/${{ github.repository }}:${{ needs.docker.outputs.image_tag }}
+          format: table
+          output: trivy-image.txt
+          severity: CRITICAL,HIGH
+          ignore-unfixed: true
+          exit-code: "0"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: trivy-image-report
+          path: trivy-image.txt
+          retention-days: 7
