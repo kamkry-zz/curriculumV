@@ -13,53 +13,55 @@ afterEach(() => {
   cleanup();
 });
 
+function renderCV(props = {}) {
+  return render(<CV data={minimalData} {...props} />);
+}
+
 describe("CV", () => {
   it("renders the name", () => {
-    render(<CV data={minimalData} />);
+    renderCV();
     expect(screen.getByText("Test User")).toBeTruthy();
   });
 
   it("renders the title", () => {
-    render(<CV data={minimalData} />);
+    renderCV();
     expect(screen.getByText("Engineer")).toBeTruthy();
   });
 
   it("renders skills as tags", () => {
-    render(<CV data={minimalData} />);
+    renderCV();
     expect(screen.getByText("React")).toBeTruthy();
     expect(screen.getByText("Docker")).toBeTruthy();
   });
 
   it("renders interests", () => {
-    render(<CV data={minimalData} />);
+    renderCV();
     expect(screen.getByText("Coding")).toBeTruthy();
   });
 
   it("renders section titles", () => {
-    render(<CV data={minimalData} />);
+    renderCV();
     expect(screen.getByText("Skills")).toBeTruthy();
     expect(screen.getByText("Interests")).toBeTruthy();
   });
 
   it("does not render optional sections when data is missing", () => {
-    render(<CV data={minimalData} />);
+    renderCV();
     expect(screen.queryByText("Summary")).toBeNull();
     expect(screen.queryByText("Experience")).toBeNull();
     expect(screen.queryByText("Education")).toBeNull();
   });
 
   it("renders initials when no photo provided", () => {
-    render(<CV data={minimalData} />);
+    renderCV();
     expect(screen.getByText("TU")).toBeTruthy();
   });
 
   it("renders photo when provided", () => {
-    render(
-      <CV
-        data={minimalData}
-        photo="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="
-      />
-    );
+    renderCV({
+      photo:
+        "data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==",
+    });
     const photo = document.querySelector('[role="img"]');
     expect(photo).toBeTruthy();
   });

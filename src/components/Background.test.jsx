@@ -50,7 +50,7 @@ describe("drawSparkle", () => {
     drawSparkle(ctx, 100, 200, 10, 0);
 
     expect(calls[0]).toBe("save");
-    expect(calls[calls.length - 1]).toBe("restore");
+    expect(calls.at(-1)).toBe("restore");
     expect(calls).toContain("beginPath");
     expect(calls).toContain("fill");
   });
