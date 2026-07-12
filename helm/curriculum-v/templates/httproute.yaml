@@ -5,7 +5,8 @@ metadata:
   namespace: {{ .Values.namespace }}
 spec:
   parentRefs:
-    - name: {{ .Values.httpRoute.parentRef }}
+    - name: nginx
+      namespace: nginx-gateway-fabric
   hostnames:
     - {{ .Values.httpRoute.hostname }}
   rules:
