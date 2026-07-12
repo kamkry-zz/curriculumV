@@ -3,6 +3,12 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm ci
 COPY . .
+
+ARG PHONE_NUMBER
+RUN if [ -n "${PHONE_NUMBER}" ]; then \
+      sed -i "s|phone:.*|phone: \"${PHONE_NUMBER}\"|" src/data/resume.yaml; \
+    fi
+
 RUN npm run build
 
 FROM python:3.14-slim

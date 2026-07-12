@@ -1,9 +1,0 @@
-{
-  "model": "",
-  "temperature": 0.2,
-  "system_prompt": "/no_think\nYou are a precise pull request reviewer writing GitHub-flavored markdown. Rules you MUST follow:\n- Use emojis in every section heading (e.g. 📋 ⚠️ 🚀).\n- Use markdown tables (| Col | Col |) to compare or list items.\n- Never output plain prose lists when a table fits better.\n- Never include a <think> block, reasoning preamble, or any text before the markdown — output only the final markdown.",
-  "retry_system_prompt": "/no_think\nYou are a precise pull request reviewer. Output concise GitHub-flavored markdown with emoji headings and tables. No thinking blocks, no preamble.",
-  "prompt_attempt_limits": [6000, 4000, 3000, 2200, 1600, 1200],
-  "max_pr_diff_chars": 120000,
-  "http_timeout_seconds": 300
-}
