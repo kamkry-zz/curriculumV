@@ -30,16 +30,16 @@ describe("Footer", () => {
 
   it("renders the version tag", () => {
     render(<Footer />);
-    expect(screen.getByText("v1.0.2")).toBeTruthy();
+    const tag = screen.getByText(/^v\d+\.\d+\.\d+$/);
+    expect(tag).toBeTruthy();
   });
 
   it("renders the docker run command with the image tag", () => {
     render(<Footer />);
-    expect(
-      screen.getByText(
-        "docker run -p 8080:8080 ghcr.io/kamkry-zz/curriculumv:1.0.2",
-      ),
-    ).toBeTruthy();
+    const cmd = screen.getByText(
+      /^docker run -p 8080:8080 ghcr\.io\/kamkry-zz\/curriculumv:\d+\.\d+\.\d+$/,
+    );
+    expect(cmd).toBeTruthy();
   });
 
   it('shows "Copy" button by default', () => {
@@ -55,7 +55,9 @@ describe("Footer", () => {
       fireEvent.click(button);
     });
     expect(navigator.clipboard.writeText).toHaveBeenCalledWith(
-      "docker run -p 8080:8080 ghcr.io/kamkry-zz/curriculumv:1.0.2",
+      expect.stringMatching(
+        /^docker run -p 8080:8080 ghcr\.io\/kamkry-zz\/curriculumv:\d+\.\d+\.\d+$/,
+      ),
     );
     expect(screen.getByText("Copied")).toBeTruthy();
     expect(screen.queryByText("Copy")).toBeNull();

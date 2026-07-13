@@ -8,10 +8,9 @@ linkedin: https://www.linkedin.com/in/kamil-krysiak-b4283864/
 patents: https://worldwide.espacenet.com/patent/search?q=nftxt%20%3D%20%22krysiak%20kamil%22%20AND%20pa%20%3D%20%22politechnika%20lodzka%22
 
 summary: >-
-  DevOps engineer with 5+ years of experience designing and operating
-  cloud-native, on-premise and hybrid infrastructure. Focused on Kubernetes, CI/CD pipelines,
-  Infrastructure as Code, and observability. Passionate about automation,
-  reliability, clever networking and empowering development teams with self-service platforms.
+  DevOps Engineer with 5+ years of experience designing and operating cloud-native, on-premises, and hybrid infrastructure. 
+  Specialized in Kubernetes, CI/CD, Infrastructure as Code, and observability. Passionate about automation, reliability, networking, and building self-service platforms that empower development teams. 
+  Holds an M.Sc. in Chemical Technology and Engineering and a B.Sc. in Nanotechnology and Nanomaterials, with a successful transition into software engineering driven by a long-standing passion for IT.
 
 experience:
   - title: Senior DevOps/Integration Engineer
@@ -21,16 +20,13 @@ experience:
     end: Present
     highlights:
       - >-
-        Been working in IoT and Payments domain, integrating customer infrastructure with Idemia's cloud (Azure) platform, including k8s deployments,
-        networking/firewall configuration and conducting smoke tests for eUICC and eSIM provisioning.
+        Integrated customer infrastructure with IDEMIA's Azure platform for IoT solutions, including Kubernetes deployments, networking, firewall configuration, and eUICC/eSIM provisioning validation.
       - >-
-        In payments domain, I've been responsible for the on-premise and cloud (Azure) infrastructure for Idemia's payments platform.
-        Managed VMs (orchestrated by Ansible), k8s clusters (on-prem and AKS, Terraform managed) and CI (Jenkins) pipelines for multiple services.
+        Managed on-premises and Azure infrastructure for the Payments platform, including VMs (Ansible), Kubernetes clusters (AKS and on-prem, Terraform), and Jenkins CI pipelines.
       - >-
-        Implementing GitOps with ArgoCD and Crossplane, achieving fully
-        declarative infrastructure with security compliance in mind (using Trivy and SonarQube for scanning).
+        Introduced GitOps using Argo CD and Crossplane, enabling fully declarative infrastructure with integrated security scanning (Trivy, SonarQube).
       - >-
-        Been introducing DORA (DevOps Research and Assessment) framework to improve DevOps maturity of the organization, including metrics collection and reporting.
+        Drove adoption of DORA metrics to measure and improve DevOps maturity across engineering teams.
 
   - title: Senior DevOps Engineer
     company: Netminds DK
@@ -39,12 +35,11 @@ experience:
     end: Jun 2025
     highlights:
       - >-
-        Extending and maintaing CI/CD process (Azure DevOps) for a large-scale, multi-tenant SaaS platform, including automated testing, deployment and monitoring
+        Enhanced CI/CD pipelines in Azure DevOps for a large-scale multi-tenant SaaS platform, covering testing, deployment, and monitoring.
       - >-
-        Integrated SAST/SCA analysis into deployment lifecycle, improving code quality and security posture. Also been actively implementing
-        OWASP SAMM and took over the security champion role for the team, providing guidance and training on secure coding practices.
+        Integrated SAST and SCA into the delivery pipeline, improving security while serving as the team's Security Champion and promoting OWASP SAMM practices.
       - >-
-        Implemented set of health probes in deployment process, that automatically detect and react to faulty deployments, reducing downtime and improving reliability of the platform.
+        Implemented automated deployment health checks that detected failed releases early, reducing downtime and improving platform reliability.
 
   - title: DevOps Engineer
     company: mBank S.A.
@@ -53,13 +48,13 @@ experience:
     end: Aug 2023
     highlights:
       - >-
-        Supported the bank’s technological transformation by implementing cloud-native solutions, including Kubernetes, CI/CD pipelines, and Infrastructure as Code.
+        Delivered cloud-native solutions based on Kubernetes, CI/CD, and Infrastructure as Code to support the bank's modernization initiatives.
       - >-
-        Led the migration of IIS-hosted applications to containerized environments, improving scalability and maintainability of the bank's services.
+        Led migration of IIS-hosted applications to Kubernetes, improving scalability and maintainability.
       - >-
-        Been developing CI (in Teamcity, using Kotlin DSL) and CD (in Azure DevOps) pipelines for multiple applications, ensuring smooth and efficient deployment processes.
+        Developed CI/CD pipelines using TeamCity (Kotlin DSL) and Azure DevOps for multiple applications.
       - >-
-        Conducted workshops and training sessions for development teams, promoting best practices in DevOps and cloud-native technologies with live demos and hands-on exercises.
+        Delivered workshops and hands-on training on DevOps and cloud-native technologies for development teams.
   
   - title: DevOps Engineer
     company: Fujitsu Poland
@@ -68,17 +63,17 @@ experience:
     end: Feb 2023
     highlights:
       - >-
-        I've been managing the on-prem cloud (vSphere, Proxmox) and container hosts (ESXi, Docker, Podman)
+        Managed on-premises virtualization and container platforms, including VMware vSphere, Proxmox, Docker, and Podman.
       - >-
-        Implemented and maintained CI/CD pipelines (GitHub Actions, Jenkins, GitLab CI) for multiple applications, ensuring smooth and efficient deployment processes.
+        Built and maintained CI/CD pipelines with GitHub Actions, Jenkins, and GitLab CI.
       - >-
-        Designed and deployed SAN storage solutions (FC, FCoE, iSCSI) with PXE/iPXE provisioning and automated OS installation (Kickstart, Preseed) for multiple Linux distributions.
+        Designed SAN storage solutions (FC, FCoE, iSCSI) and automated Linux provisioning using PXE/iPXE, Kickstart, and Preseed.
       - >-
-        Migrated old VMs/physical servers to containers (Docker, Podman).
+        Migrated legacy virtual machines and physical servers to containerized workloads.
       - >-
-        Managed vulnerabilities scanning (Mend) and code analysis (SonarQube).
+        Managed vulnerability scanning (Mend) and code quality analysis (SonarQube).
       - >-
-        Created internal documentation for C5 and GxP certifications in ServiceHub cloud (DE).
+        Authored technical documentation supporting C5 and GxP compliance for the ServiceHub cloud platform.
 
   - title: Junior Software Engineer
     company: Cybercom Poland
@@ -87,25 +82,25 @@ experience:
     end: Apr 2021
     highlights:
       - >-
-        I've been providing support to the QA team in LTE/5G network simulator project, including bug fixing and PHY and MAC layer investigration.
+        Supported QA for an LTE/5G network simulator through bug fixing and PHY/MAC layer analysis.
       - >-
-        Troubleshooting the radio-link and core network issues in the simulator, including analysis of IoT device behavior(CAT-M and NB-IoT) and VoLTE traffic.
+        Investigated radio access and core network issues, including CAT-M, NB-IoT, and VoLTE traffic.
       - >-
-        Implemented few simple Python and Ruby scripts to automate the testing process and make configurations insensitive to user error/misconfiguration.
+        Automated testing and configuration tasks with Python and Ruby scripts, reducing manual effort and configuration errors.
 
   - title: Product Manager
-    company: Politechnika Łódzka
-    location: Łódź, Poland
+    company: Metrohom Poland
+    location: Warszawa, Poland
     start: Feb 2019
     end: Aug 2020
     highlights:
       - >-
-        I've been leading a team of sales and marketing specialists, responsible for the development and promotion of spectroscopy devices and solutions.
+        Led a sales and marketing team responsible for spectroscopy products and solutions.
       - >-
-        Developed analytical methods for Raman and NIRS spectroscopy, tailored to the needs of the customers, and provided training and support for their implementation.
+        Developed customer-specific Raman and NIR spectroscopy methods and delivered technical training.
       - >-
-        Conducted a thorough, complete development of illicit drugs and combat warfare agents detection methods, including sample preparation, measurement and data analysis, resulting in a comprehensive solution for Polish Police and Anti-terrorist Units.
-
+        Designed end-to-end detection methods for illicit drugs and chemical warfare agents, delivering solutions adopted by the Polish Police and counter-terrorism units.
+        
 education:
   - degree: B.Sc. Nanotechnology and Nanomaterials
     school: Politechnika Łódzka
@@ -114,6 +109,10 @@ education:
   - degree: M.Sc. Chemical Technology and Engineering
     school: Politechnika Łódzka
     year: "2014"
+
+  - degree: Ph.D. Chemical Technology and Engineering (All but dissertation)
+    school: Politechnika Łódzka
+    year: "2019"
 
 skills:
   - Kubernetes
@@ -142,6 +141,7 @@ languages:
 interests:
   - Homelab / Self-hosting
   - Automation
+  - Electrical engineering
   - Ham Radio (callsign HF7CATS)
   - Sailing
   - Snowboarding
