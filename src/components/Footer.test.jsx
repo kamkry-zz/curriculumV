@@ -78,6 +78,17 @@ describe("Footer", () => {
     expect(screen.queryByText("Copied")).toBeNull();
   });
 
+  it("highlights the GitHub link on hover and restores it on leave", () => {
+    render(<Footer />);
+    const link = screen.getByText("Star on GitHub").closest("a");
+
+    fireEvent.mouseEnter(link);
+    expect(link.style.color).toBe("rgb(196, 181, 253)");
+
+    fireEvent.mouseLeave(link);
+    expect(link.style.color).toBe("rgb(167, 139, 250)");
+  });
+
   it("stays on Copy when clipboard API fails", async () => {
     const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => {});
     navigator.clipboard.writeText = vi.fn().mockRejectedValue(new Error("denied"));
