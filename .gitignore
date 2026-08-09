@@ -5,3 +5,6 @@ dist
 .idea
 .vscode
 coverage
+__pycache__
+.coverage
+coverage-python.xml
