@@ -65,11 +65,20 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run test:coverage
+      - run: python -m pip install --quiet fastapi httpx pytest pytest-cov
+      - run: python -m pytest tests/ --cov=app --cov-report=xml:coverage-python.xml
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: pr-report-coverage
           path: coverage/lcov.info
+          if-no-files-found: warn
+          retention-days: 1
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: pr-report-coverage-python
+          path: coverage-python.xml
           if-no-files-found: warn
           retention-days: 1
 
@@ -93,6 +102,13 @@ jobs:
         with:
           name: pr-report-coverage
           path: coverage
+
+      - name: Download Python coverage report
+        uses: actions/download-artifact@v4
+        continue-on-error: true
+        with:
+          name: pr-report-coverage-python
+          path: coverage-python
 
       - name: SonarQube Scan
         id: scan

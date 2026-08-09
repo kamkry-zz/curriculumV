@@ -46,9 +46,8 @@ describe("App", () => {
     cvState.attachRef = false;
     render(<App />);
     const pdfButton = screen.getByText("Export PDF").closest("button");
-    await act(async () => {
-      fireEvent.click(pdfButton);
-    });
+    fireEvent.click(pdfButton);
+    await act(async () => {});
     expect(
       screen.getByText("CV element not found — report this bug"),
     ).toBeTruthy();
@@ -63,9 +62,8 @@ describe("App", () => {
     render(<App />);
     const button = screen.getByText(label).closest("button");
 
-    await act(async () => {
-      fireEvent.click(button);
-    });
+    fireEvent.click(button);
+    await act(async () => {});
 
     expect(fn).toHaveBeenCalledTimes(1);
     expect(fn.mock.calls[0][0].textContent).toBe("CV Mock");
@@ -79,9 +77,8 @@ describe("App", () => {
     render(<App />);
     const button = screen.getByText("Export PDF").closest("button");
 
-    await act(async () => {
-      fireEvent.click(button);
-    });
+    fireEvent.click(button);
+    await act(async () => {});
 
     expect(screen.getByText("Generating PDF…")).toBeTruthy();
     expect(screen.getByText("Exporting…")).toBeTruthy();
@@ -103,9 +100,8 @@ describe("App", () => {
     render(<App />);
     const button = screen.getByText("Export PDF").closest("button");
 
-    await act(async () => {
-      fireEvent.click(button);
-    });
+    fireEvent.click(button);
+    await act(async () => {});
 
     expect(screen.getByText("canvas blew up")).toBeTruthy();
     expect(consoleSpy).toHaveBeenCalled();
@@ -118,9 +114,8 @@ describe("App", () => {
     render(<App />);
     const button = screen.getByText("Export PDF").closest("button");
 
-    await act(async () => {
-      fireEvent.click(button);
-    });
+    fireEvent.click(button);
+    await act(async () => {});
 
     expect(screen.getByText("Export failed")).toBeTruthy();
     consoleSpy.mockRestore();
@@ -132,14 +127,12 @@ describe("App", () => {
     exportPNG.mockResolvedValue(undefined);
     render(<App />);
 
-    await act(async () => {
-      fireEvent.click(screen.getByText("Export PDF").closest("button"));
-    });
+    fireEvent.click(screen.getByText("Export PDF").closest("button"));
+    await act(async () => {});
     expect(screen.getByText("first failure")).toBeTruthy();
 
-    await act(async () => {
-      fireEvent.click(screen.getByText("Export PNG").closest("button"));
-    });
+    fireEvent.click(screen.getByText("Export PNG").closest("button"));
+    await act(async () => {});
     expect(screen.queryByText("first failure")).toBeNull();
     consoleSpy.mockRestore();
   });

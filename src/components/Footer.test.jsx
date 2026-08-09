@@ -51,9 +51,8 @@ describe("Footer", () => {
   it('copies to clipboard and shows "Copied" on click', async () => {
     render(<Footer />);
     const button = screen.getByText("Copy").closest("button");
-    await act(async () => {
-      fireEvent.click(button);
-    });
+    fireEvent.click(button);
+    await act(async () => {});
     expect(navigator.clipboard.writeText).toHaveBeenCalledWith(
       expect.stringMatching(
         /^docker run -p 8080:8080 ghcr\.io\/kamkry-zz\/curriculumv:\d+\.\d+\.\d+$/,
@@ -66,9 +65,8 @@ describe("Footer", () => {
   it('reverts to "Copy" after the timeout', async () => {
     render(<Footer />);
     const button = screen.getByText("Copy").closest("button");
-    await act(async () => {
-      fireEvent.click(button);
-    });
+    fireEvent.click(button);
+    await act(async () => {});
     expect(screen.getByText("Copied")).toBeTruthy();
 
     act(() => {
@@ -95,9 +93,8 @@ describe("Footer", () => {
 
     render(<Footer />);
     const button = screen.getByText("Copy").closest("button");
-    await act(async () => {
-      fireEvent.click(button);
-    });
+    fireEvent.click(button);
+    await act(async () => {});
 
     expect(screen.getByText("Copy")).toBeTruthy();
     expect(screen.queryByText("Copied")).toBeNull();

@@ -249,12 +249,12 @@ describe("Background component", () => {
     const ctx = setup();
     render(<Background />);
 
-    expect(rafCallbacks.length).toBe(1);
+    expect(rafCallbacks).toHaveLength(1);
     rafCallbacks[0](16);
 
     expect(ctx.clearRect).toHaveBeenCalled();
     expect(ctx.arc).toHaveBeenCalled();
-    expect(rafCallbacks.length).toBe(2);
+    expect(rafCallbacks).toHaveLength(2);
   });
 
   it("spawns sparkles once the interval has elapsed", () => {
@@ -270,11 +270,11 @@ describe("Background component", () => {
     const ctx = setup({ reducedMotion: true });
     render(<Background />);
 
-    expect(rafCallbacks.length).toBe(1);
+    expect(rafCallbacks).toHaveLength(1);
     rafCallbacks[0](16);
 
     expect(ctx.clearRect).toHaveBeenCalled();
-    expect(rafCallbacks.length).toBe(1);
+    expect(rafCallbacks).toHaveLength(1);
   });
 
   it("cancels the animation frame on unmount", () => {

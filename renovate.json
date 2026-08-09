@@ -10,6 +10,14 @@
     "helmv3",
     "helm-values"
   ],
+  "bumpVersions": [
+    {
+      "name": "Bump Helm image tag",
+      "filePatterns": ["helm/curriculum-v/values.yaml"],
+      "matchStrings": ["imageTag:\\s*[\"']?(?<version>\\d+\\.\\d+\\.\\d+)"],
+      "bumpType": "patch"
+    }
+  ],
   "packageRules": [
     {
       "description": "Group npm non-major updates together",
