@@ -20,9 +20,7 @@ experience:
     end: Present
     highlights:
       - >-
-        Integrated customer infrastructure with IDEMIA's Azure platform for IoT solutions, including Kubernetes deployments, networking, firewall configuration, and eUICC/eSIM provisioning validation.
-      - >-
-        Been integrating IoT DP+ management platform with customer infrastructure, including CoAP/CoAPS protocols, MQTT brokers, and secure communication with IoT devices.
+        Integrated customer infrastructure with IDEMIA's Azure platform for IoT solutions, including Kubernetes deployments, networking (including CoAP/CoAPS protocols), firewall configuration, and eUICC/eSIM provisioning validation.
       - >-
         Managed on-premises and Azure infrastructure for the Payments platform, including VMs (Ansible), Kubernetes clusters (AKS and on-prem, Terraform), and Jenkins CI pipelines.
       - >-
@@ -105,8 +103,6 @@ experience:
       - >-
         Managed sales and marketing of spectroscopy solutions, applications, and accessories, along with customer-company relationship management and technical training delivery.
       - >-
-        Conducted in-laboratory investigations toward new NIR, Raman, and SERS applications for the pharmaceutical, chemical, food & feed, and defence & security markets.
-      - >-
         Designed end-to-end detection methods for illicit drugs and chemical warfare agents, delivering solutions adopted by the Polish Police and counter-terrorism units.
       - >-
         Prepared IQ/OQ/PQ qualification documentation for NIR and Raman systems for Teva in Kraków (former Polpha S.A.).
@@ -130,6 +126,8 @@ skills:
   - Azure / AKS
   - Terraform
   - ArgoCD
+  - GitOps
+  - Linux, Windows
   - GitHub Actions, Jenkins, Azure DevOps, TeamCity
   - Helm
   - Grafana / Prometheus
@@ -139,8 +137,6 @@ skills:
   - Hardware (including microcontrollers, sensors, and embedded systems)
   - Networking (TCP/IP, VLANs, VPNs, Firewalls)
   - DB administration (PostgreSQL, MySQL, MSSQL)
-  - Linux, Windows
-  - GitOps
 
 languages:
   - language: Polish
