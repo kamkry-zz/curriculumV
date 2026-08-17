@@ -20,7 +20,7 @@ experience:
     end: Present
     highlights:
       - >-
-        Integrated customer infrastructure with IDEMIA's Azure platform for IoT solutions, including Kubernetes deployments, networking, firewall configuration, and eUICC/eSIM provisioning validation.
+        Integrated customer infrastructure with IDEMIA's Azure platform for IoT solutions, including Kubernetes deployments, networking (including CoAP/CoAPS protocols), firewall configuration, and eUICC/eSIM provisioning validation.
       - >-
         Managed on-premises and Azure infrastructure for the Payments platform, including VMs (Ansible), Kubernetes clusters (AKS and on-prem, Terraform), and Jenkins CI pipelines.
       - >-
@@ -82,11 +82,13 @@ experience:
     end: Apr 2021
     highlights:
       - >-
-        Supported QA for an LTE/5G network simulator through bug fixing and PHY/MAC layer analysis.
+        Member of the 4G/5G NR RAN software simulators support team, analyzing and troubleshooting software-related issues in the PHY, MAC, RLC, and PDCP layers of the E-UTRA stack on both UE and Node sides.
       - >-
-        Investigated radio access and core network issues, including CAT-M, NB-IoT, and VoLTE traffic.
+        Investigated network communication between simulated UE and eNB/gNB over the Uu interface, including 5G NSA deployments with LTE control plane.
       - >-
-        Automated testing and configuration tasks with Python and Ruby scripts, reducing manual effort and configuration errors.
+        Ran simulations with Cat-M and NB-IoT UEs under 3GPP Release 13 and newer, covering various Carrier Aggregation implementations and, at a basic level, MIMO and beamforming techniques.
+      - >-
+        Automated testing and configuration tasks with BASH, Python, and Ruby scripting, reducing manual effort and configuration errors.
 
   - title: Product Manager
     company: Metrohom Poland
@@ -95,11 +97,15 @@ experience:
     end: Aug 2020
     highlights:
       - >-
-        Led a sales and marketing team responsible for spectroscopy products and solutions.
+        Product Manager of Near-Infrared and Raman spectroscopy methods and devices, coordinating the sales force and service engineers in spectroscopy product projects across Poland, Latvia, and Lithuania.
       - >-
-        Developed customer-specific Raman and NIR spectroscopy methods and delivered technical training.
+        Developed methods, applications, and laboratory methodologies/protocols for NIR and Raman across chemical, petrochemical, personal care, food, pharmaceutical, military & defence, and paper & pulp industries.
+      - >-
+        Managed sales and marketing of spectroscopy solutions, applications, and accessories, along with customer-company relationship management and technical training delivery.
       - >-
         Designed end-to-end detection methods for illicit drugs and chemical warfare agents, delivering solutions adopted by the Polish Police and counter-terrorism units.
+      - >-
+        Prepared IQ/OQ/PQ qualification documentation for NIR and Raman systems for Teva in Kraków (former Polpha S.A.).
         
 education:
   - degree: B.Sc. Nanotechnology and Nanomaterials
@@ -120,6 +126,8 @@ skills:
   - Azure / AKS
   - Terraform
   - ArgoCD
+  - GitOps
+  - Linux, Windows
   - GitHub Actions, Jenkins, Azure DevOps, TeamCity
   - Helm
   - Grafana / Prometheus
@@ -129,8 +137,6 @@ skills:
   - Hardware (including microcontrollers, sensors, and embedded systems)
   - Networking (TCP/IP, VLANs, VPNs, Firewalls)
   - DB administration (PostgreSQL, MySQL, MSSQL)
-  - Linux, Windows
-  - GitOps
 
 languages:
   - language: Polish
