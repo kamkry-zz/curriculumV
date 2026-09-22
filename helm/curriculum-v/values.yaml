@@ -1,7 +1,7 @@
 name: curriculum-v
 namespace: curriculum-v
 
-imageTag: "1.0.25"
+imageTag: "1.0.26"
 
 replicaCount: 1
 
