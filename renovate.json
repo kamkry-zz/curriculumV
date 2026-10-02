@@ -3,6 +3,7 @@
   "extends": [
     "config:recommended"
   ],
+  "assignees": ["kamkry-zz"],
   "enabledManagers": [
     "npm",
     "pep621",
