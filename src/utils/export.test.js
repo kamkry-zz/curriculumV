@@ -102,9 +102,9 @@ describe("cleanClone", () => {
 
   it("preserves non-gradient solid backgrounds", () => {
     const el = document.createElement("div");
-    el.style.background = "rgb(255, 0, 0)";
+    el.style.backgroundColor = "rgb(255, 0, 0)";
     cleanClone(el);
-    expect(el.style.background).toBe("rgb(255, 0, 0)");
+    expect(el.style.backgroundColor).toBe("rgb(255, 0, 0)");
   });
 });
 
