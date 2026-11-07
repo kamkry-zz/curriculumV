@@ -63,6 +63,13 @@ jobs:
         with:
           node-version: 22
           cache: npm
+      - name: Verify package-lock.json is in sync with package.json
+        run: |
+          npm install --package-lock-only --ignore-scripts --no-audit --no-fund
+          if ! git diff --exit-code -- package-lock.json; then
+            echo "::error::package-lock.json is out of sync with package.json. Run 'npm install' locally and commit the lockfile."
+            exit 1
+          fi
       - run: npm ci
       - run: npm run test:coverage
       - run: python -m pip install --quiet fastapi httpx pytest pytest-cov

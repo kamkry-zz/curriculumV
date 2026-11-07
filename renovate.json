@@ -8,6 +8,10 @@
   "prHourlyLimit": 0,
   "prConcurrentLimit": 0,
   "rebaseWhen": "conflicted",
+  "lockFileMaintenance": {
+    "enabled": true,
+    "schedule": ["* 1-5 * * 1,4,6"]
+  },
   "separateMajorMinor": false,
   "assignees": ["kamkry-zz"],
   "enabledManagers": [
