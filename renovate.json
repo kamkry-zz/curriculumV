@@ -35,6 +35,12 @@
       "matchPackageNames": ["*"],
       "groupName": "dependencies",
       "groupSlug": "all"
+    },
+    {
+      "description": "Keep the npm used for lockfiles below 12 (packageManager field). npm 12 defaults to allow-remote=none and Renovate's hosted sandbox then refused registry tarballs (EALLOWREMOTE), leaving package-lock.json stale on renovate/all (CI: lockfile out of sync). Lift once the sandbox issue is confirmed fixed.",
+      "matchPackageNames": ["npm"],
+      "matchDepTypes": ["packageManager"],
+      "allowedVersions": "<12"
     }
   ]
 }
