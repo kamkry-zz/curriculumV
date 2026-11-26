@@ -11,16 +11,17 @@
 | `npm run dev` | Vite dev server (HMR, port 5173) |
 | `npm run build` | Production build → `dist/` |
 | `npm run lint` | Oxlint (0 warnings required) |
+| `npm test` / `npm run test:coverage` | Vitest (jsdom) / with v8 coverage |
 | `npm run preview` | Preview production build |
-| `python app.py` / `uvicorn app:app` | Backend static server (port 8080) |
+| `uvicorn app:app --port 8080` | Backend static server for `dist/` (run `npm run build` first; the container uses port 8080) |
 
 ## Tech Stack
 
 - **Frontend:** React 19, Vite 8, Tailwind CSS v4, GSAP, js-yaml, html2canvas + jsPDF
 - **Backend:** FastAPI + Uvicorn (static file server only — serves `dist/`)
-- **Container:** Multi-stage Docker (`node:22-alpine` → `python:3.13-slim`)
+- **Container:** Multi-stage Docker (`node:26-alpine` → `python:3.15-slim`)
 - **Deploy:** Helm chart → Kubernetes, ArgoCD GitOps, `cv.theit.cc`
-- **CI:** GitHub Actions — lint, build, SonarQube, Trivy, AI PR review, Docker push
+- **CI:** GitHub Actions — Helm lint, tests, SonarQube, Trivy, Docker push, PR comment
 
 ## Architecture
 
@@ -28,10 +29,12 @@
 src/
 ├── main.jsx          → React entry, renders <App />
 ├── index.css         → Tailwind v4 @import, @theme tokens, @keyframes, glass classes, print/capture resets
-├── App.jsx           → Root: toolbar, CV, Background, GlassOrbs, export trigger, export loading modal
+├── App.jsx           → Root: toolbar, CV, Background, GlassOrbs, Footer, export trigger, export loading modal
+├── test-setup.js     → Vitest setup (each module has a sibling `*.test.jsx`/`*.test.js`)
 ├── components/
 │   ├── CV.jsx        → Core CV document (A4 card, 3D tilt, staggered animations, all sections)
 │   ├── Background.jsx→ Canvas particle network + rare colorful sparkle stars
+│   ├── Footer.jsx    → Image tag, repo link, copyable `docker run` command (`__IMAGE_TAG__`/`__REPO_URL__` build defines)
 │   └── GlassOrbs.jsx → 5 large blurred violet/silver floating orbs (CSS-animated)
 ├── data/
 │   ├── resume.yaml   → All CV content (parsed via js-yaml + Vite ?raw import)
@@ -49,7 +52,7 @@ import { load } from "js-yaml";
 import raw from "./data/resume.yaml?raw";
 const resume = load(raw);
 ```
-Structure: `name`, `title`, `email`, `phone`, `location`, `website`, `github`, `linkedin`, `summary`, `experience[]`, `education[]`, `skills[]`, `languages[]`, `interests[]`. All fields optional — CV renders conditionally.
+Structure: `name`, `title`, `email`, `phone`, `location`, `website`, `github`, `linkedin`, `patents`, `summary`, `experience[]`, `education[]`, `skills[]`, `languages[]`, `interests[]`. All fields optional — CV renders conditionally. The Docker build overwrites `phone` from the `PHONE_NUMBER` build-arg (CI repo variable) when set.
 
 ### Color System (Tailwind v4 @theme)
 Defined in `src/index.css`. Custom tokens: `canvas` (#09090b), `surface` (#131318), `accent` (#8b5cf6), `accent-light` (#a78bfa), `silver` (#d4d4d8). Fonts: `font-heading` (Space Grotesk), `font-mono` (JetBrains Mono). Body font: Inter.
@@ -85,11 +88,11 @@ Elements marked with `data-export-block` in CV.jsx are captured individually for
 
 ## CI/CD
 
-Workflow: `.github/workflows/ci.yml` calls reusable `app-ci.yml`. On PR: lint-helm → build → sonarqube → trivy FS → AI summary → aggregate PR comment. On push to main: same + Docker build/push + Trivy image scan. ArgoCD auto-syncs Helm chart from repo.
+Workflow: `.github/workflows/ci.yml` (trigger: `pull_request` to `main` only) calls reusable `app-ci.yml`: lint-helm → test → sonarqube → trivy FS → docker build/push → Trivy image scan → aggregate PR comment. The image is pushed from the PR run, not on merge. ArgoCD auto-syncs the Helm chart from the repo (`helm/curriculum-v/argocd/`).
 
 ## Versioning & PR Rules
 
 - **🏷️ Bump `imageTag`** in `helm/curriculum-v/values.yaml` whenever app code changes (`src/`, `Dockerfile`, `package.json`, `pyproject.toml`). The CI Docker push uses this tag.
 - **✅ Tag bump NOT required** when only Helm/K8s configs change (`helm/`, `.github/`).
 - **🔒 Every change must come via a PR** — no direct pushes to `main`.
-- On merge to `main`, CI builds and pushes `ghcr.io/<owner>/curriculum-v:<imageTag>` + `:latest`, ArgoCD syncs automatically.
+- The PR run builds and pushes `ghcr.io/kamkry-zz/curriculumv:<imageTag>` (no `:latest`); after merge ArgoCD syncs the chart, which pins that tag.
