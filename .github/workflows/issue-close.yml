@@ -1,0 +1,72 @@
+name: issue-close
+
+# gh-track: close the tracking issue when its PR is merged and its openspec change is archived.
+#   `Closes|Fixes|Refs #N`  -> closed on merge (unless label `epic`, or openspec change not archived yet)
+#   `Part of #N`            -> never closes (multi-PR work, epics)
+# Also re-checks open openspec issues whenever openspec/changes/** changes on the default branch.
+on:
+  pull_request:
+    types: [closed]
+  push:
+    paths: ["openspec/changes/**"]
+
+permissions:
+  contents: read
+  issues: write
+  pull-requests: read
+  actions: read
+
+jobs:
+  merged-pr:
+    if: github.event_name == 'pull_request' && github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+          persist-credentials: false
+      - name: Close referenced issues
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          PR: ${{ github.event.pull_request.number }}
+          PR_BODY: ${{ github.event.pull_request.body }}
+          PR_BRANCH: ${{ github.event.pull_request.head.ref }}
+        run: |
+          nums=$( { printf '%s' "$PR_BODY" | grep -Eoi '(closes|fixes|refs) #[0-9]+' | grep -Eo '[0-9]+'
+                    printf '%s' "$PR_BRANCH" | grep -Eo '^([a-z]+/)?[0-9]+-' | grep -Eo '[0-9]+'; } | sort -un )
+          [ -n "$nums" ] || { echo "no issue referenced"; exit 0; }
+          stats=$(gh run list -R "$REPO" --branch "$PR_BRANCH" --limit 100 --json workflowName,conclusion,startedAt,updatedAt \
+            --jq '[.[] | select(.conclusion != null and .startedAt != null)] | "runs \(length) · ✅ \([.[]|select(.conclusion=="success")]|length) · ❌ \([.[]|select(.conclusion=="failure")]|length) · total \(([.[]|((.updatedAt|fromdate)-(.startedAt|fromdate))]|add // 0)|floor)s wall"')
+          for n in $nums; do
+            json=$(gh issue view "$n" -R "$REPO" --json state,labels,body 2>/dev/null) || continue
+            [ "$(jq -r .state <<<"$json")" = OPEN ] || continue
+            jq -e '[.labels[].name]|index("tracking")' <<<"$json" >/dev/null || continue
+            if jq -e '[.labels[].name]|index("epic")' <<<"$json" >/dev/null; then echo "#$n is an epic, not closing"; continue; fi
+            name=$(jq -r .body <<<"$json" | grep -Eo 'gh-track:openspec:[^ ]+' | head -1 | cut -d: -f3)
+            if [ -n "$name" ] && [ -d "openspec/changes/$name" ]; then
+              gh issue comment "$n" -R "$REPO" --body "🔀 PR #$PR merged ($stats). Waiting for openspec change \`$name\` to be archived before closing."
+              continue
+            fi
+            gh issue close "$n" -R "$REPO" --reason completed --comment "✅ Closed by PR #$PR (merged). CI for the branch: $stats. Full summary is finalized by the weekly gh-track job."
+          done
+  archived-change:
+    if: github.event_name == 'push' && github.ref_name == github.event.repository.default_branch
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Close issues whose openspec change got archived
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+        run: |
+          gh issue list -R "$REPO" --label openspec --label tracking --state open --limit 200 --json number,body,labels |
+            jq -c '.[] | select([.labels[].name]|index("epic")|not) | {n: .number, name: (.body|capture("gh-track:openspec:(?<x>[^ ]+)").x)}' |
+            while read -r row; do
+              n=$(jq -r .n <<<"$row"); name=$(jq -r .name <<<"$row")
+              if [ ! -d "openspec/changes/$name" ] && ls -d openspec/changes/archive/*-"$name" >/dev/null 2>&1; then
+                gh issue close "$n" -R "$REPO" --reason completed --comment "📦 openspec change \`$name\` is archived — closing."
+              fi
+            done

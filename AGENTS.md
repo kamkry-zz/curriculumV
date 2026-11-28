@@ -10,12 +10,15 @@ protocol and stats reference: `~/gitRepos/repo-settings/docs/ISSUE-TRACKING.md`.
 1. **Start:** `$GT status` (also lists UNTRACKED issues: `$GT adopt N --model … --effort …`);
    continue the matching issue or create one:
    `$GT open --title … --kind feature|fix|chore|experiment|task --model <id> --effort <level>`
-   (`--epic` for a parent, `--parent N` for a child). Bot PRs (Renovate) are exempt.
+   (`--epic` for a parent, `--parent N` for a child = native GitHub sub-issue). Bot PRs (Renovate) are exempt.
+   `open`/`adopt` post a 💡 suggested model/effort with estimated tokens and usage share:
+   start with it, or log the deviation via `model … --reason`.
 2. **Model / effort:** recorded at `open`; on every switch run
    `$GT model N --model <id> --effort <level> --reason "…"`.
 3. **Branches:** `<kind>/<N>-slug` (`$GT branch N slug --prefix feat|fix|chore|exp [--worktree]`);
    with that name `$GT` infers N and pushes / `gh pr create` are blocked by the hook until it has one.
-   PR descriptions say `Refs #N` (CI check `issue-link`).
+   PR descriptions say `Refs #N` (CI check `issue-link`); use `Part of #N` when several PRs
+   share one issue (it never auto-closes).
 4. **Parallel work:** each extra session or worktree runs `$GT session N --branch <b> --role <what>`
    (adds the `parallel` label). Several sessions never share one branch.
 5. **Milestones:** `$GT milestone N "…"` at plan agreed, first green tests, PR opened,
@@ -27,8 +30,10 @@ protocol and stats reference: `~/gitRepos/repo-settings/docs/ISSUE-TRACKING.md`.
    text and images are embedded, anything else is linked.
 8. **References:** `$GT ref N --kind decision|incident|deploy|doc --text … [--url …]` for design
    decisions, `TROUBLESHOOTING` entries, deploy outcomes (ArgoCD sync/health).
-9. **Link & close:** commits/PRs say `Refs #N`; `$GT link N --pr P` (or `--commit SHA` for a
-   direct landing). Finish with `$GT refresh N --final` then `$GT close N` — it refuses while a
+9. **Link & close:** commits/PRs say `Refs #N`; the `issue-close` workflow closes the issue on merge
+   (epics never, openspec issues only once the change is archived); `$GT link N --pr P` (or `--commit SHA` for a
+   direct landing). After finished work, `$GT calibrate N --weekly-pct X` with the `/usage`
+   delta makes the usage estimates real. Finish with `$GT refresh N --final` then `$GT close N` — it refuses while a
    PR is open or the openspec change is unarchived.
 10. **openspec** (if `openspec/` exists): one issue per change — `$GT open … --openspec <name>`
    *before* writing the proposal; `$GT adopt-openspec --model … --effort …` backfills active
