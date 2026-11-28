@@ -1,5 +1,6 @@
 name: Tracked work (AI-driven)
 description: A feature, fix, experiment or task that an AI session will work on
+title: "[task] [REPO] "
 labels: ["tracking"]
 body:
   - type: dropdown
@@ -8,6 +9,12 @@ body:
       label: Kind
       options: [feature, fix, chore, experiment, task]
     validations: {required: true}
+  - type: input
+    id: repos
+    attributes:
+      label: Repos touched
+      description: Every repo this work touches, comma-separated. Must match the second bracket in the title.
+      placeholder: "krysdom-api, terraform-configs"
   - type: textarea
     id: goal
     attributes:

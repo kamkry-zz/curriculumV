@@ -9,10 +9,13 @@ protocol and stats reference: `~/gitRepos/repo-settings/docs/ISSUE-TRACKING.md`.
 
 1. **Start:** `$GT status` (also lists UNTRACKED issues: `$GT adopt N --model … --effort …`);
    continue the matching issue or create one:
-   `$GT open --title … --kind feature|fix|chore|experiment|task --model <id> --effort <level>`
+   `$GT open --title … --kind feature|fix|chore|experiment|task --model <id> --effort <level> [--repos other-repo,…]`
    (`--epic` for a parent, `--parent N` for a child = native GitHub sub-issue). Bot PRs (Renovate) are exempt.
    `open`/`adopt` post a 💡 suggested model/effort with estimated tokens and usage share:
    start with it, or log the deviation via `model … --reason`.
+   **Titles are `[type] [repo, repo…] text`** — the second bracket lists every repo the work touches
+   (this repo first; `open` adds it, `--repos` adds more, `retitle N --repos a,b` fixes it later;
+   `[all repos]` for work touching every repo). `adopt` and `audit` enforce it.
 2. **Model / effort:** recorded at `open`; on every switch run
    `$GT model N --model <id> --effort <level> --reason "…"`.
 3. **Branches:** `<kind>/<N>-slug` (`$GT branch N slug --prefix feat|fix|chore|exp [--worktree]`);
