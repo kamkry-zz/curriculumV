@@ -1,0 +1,26 @@
+name: issue-link
+
+# Every non-bot PR must reference its tracking issue (gh-track protocol).
+on:
+  pull_request:
+    types: [opened, edited, synchronize, reopened]
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Require a linked issue
+        env:
+          PR_BODY: ${{ github.event.pull_request.body }}
+          PR_BRANCH: ${{ github.event.pull_request.head.ref }}
+          PR_AUTHOR: ${{ github.event.pull_request.user.login }}
+        run: |
+          case "$PR_AUTHOR" in *"[bot]"|renovate*|dependabot*) echo "bot PR, exempt"; exit 0;; esac
+          case "$PR_BRANCH" in renovate/*|dependabot/*) echo "bot branch, exempt"; exit 0;; esac
+          if printf '%s' "$PR_BODY" | grep -Eqi '(refs|closes|fixes|part of) #[0-9]+'; then exit 0; fi
+          if printf '%s' "$PR_BRANCH" | grep -Eq '^([a-z]+/)?[0-9]+-'; then exit 0; fi
+          echo "::error::PR must reference its tracking issue: add 'Refs #N' to the description or use branch <kind>/<N>-slug (see AGENTS.md, Work tracking in GitHub Issues)."
+          exit 1

@@ -1,0 +1,36 @@
+name: Tracked work (AI-driven)
+description: A feature, fix, experiment or task that an AI session will work on
+labels: ["tracking"]
+body:
+  - type: dropdown
+    id: kind
+    attributes:
+      label: Kind
+      options: [feature, fix, chore, experiment, task]
+    validations: {required: true}
+  - type: textarea
+    id: goal
+    attributes:
+      label: Goal
+      description: What and why, in a few sentences.
+    validations: {required: true}
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+      description: Checklist a session can verify. Name tests and measurable gates.
+      placeholder: "- [ ] ..."
+    validations: {required: true}
+  - type: textarea
+    id: touches
+    attributes:
+      label: Touches
+      description: Paths or modules expected to change (helps spot overlap between parallel sessions).
+  - type: input
+    id: model
+    attributes:
+      label: Planned model / effort
+      placeholder: "sonnet / high"
+  - type: markdown
+    attributes:
+      value: "A session attaches the tracking summary with `gh_track.py adopt <N> --model … --effort …`."

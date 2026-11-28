@@ -7,28 +7,35 @@ finished in this repo. No AI session works without a tracked issue. Helper
 (stdlib + `gh`): `GT="python3 $HOME/gitRepos/repo-settings/tools/gh_track.py"`;
 protocol and stats reference: `~/gitRepos/repo-settings/docs/ISSUE-TRACKING.md`.
 
-1. **Start:** `$GT status`; continue the matching issue or create one:
+1. **Start:** `$GT status` (also lists UNTRACKED issues: `$GT adopt N --model … --effort …`);
+   continue the matching issue or create one:
    `$GT open --title … --kind feature|fix|chore|experiment|task --model <id> --effort <level>`
    (`--epic` for a parent, `--parent N` for a child). Bot PRs (Renovate) are exempt.
 2. **Model / effort:** recorded at `open`; on every switch run
    `$GT model N --model <id> --effort <level> --reason "…"`.
-3. **Parallel work:** each extra session or worktree runs `$GT session N --branch <b> --role <what>`
+3. **Branches:** `<kind>/<N>-slug` (`$GT branch N slug --prefix feat|fix|chore|exp [--worktree]`);
+   with that name `$GT` infers N and pushes / `gh pr create` are blocked by the hook until it has one.
+   PR descriptions say `Refs #N` (CI check `issue-link`).
+4. **Parallel work:** each extra session or worktree runs `$GT session N --branch <b> --role <what>`
    (adds the `parallel` label). Several sessions never share one branch.
-4. **Milestones:** `$GT milestone N "…"` at plan agreed, first green tests, PR opened,
+5. **Milestones:** `$GT milestone N "…"` at plan agreed, first green tests, PR opened,
    CI result, hand-off. It refreshes token, CI and delivery stats in the issue's summary table.
-5. **CI:** GitHub Actions runs are collected automatically per branch/PR. Wrap local
+6. **CI:** GitHub Actions runs are collected automatically per branch/PR. Wrap local
    gates: `$GT run N --label local-ci -- <command>` (records time and exit code).
-6. **Artifacts:** every deliverable (Claude Design, Docs, Artifact, diagram, screenshot,
+7. **Artifacts:** every deliverable (Claude Design, Docs, Artifact, diagram, screenshot,
    report) goes in with `$GT artifact N --title … (--file PATH | --url URL) [--source-url URL]`;
    text and images are embedded, anything else is linked.
-7. **Link & close:** commits/PRs say `Refs #N`; `$GT link N --pr P` (or `--commit SHA` for a
+8. **References:** `$GT ref N --kind decision|incident|deploy|doc --text … [--url …]` for design
+   decisions, `TROUBLESHOOTING` entries, deploy outcomes (ArgoCD sync/health).
+9. **Link & close:** commits/PRs say `Refs #N`; `$GT link N --pr P` (or `--commit SHA` for a
    direct landing). Finish with `$GT refresh N --final` then `$GT close N` — it refuses while a
    PR is open or the openspec change is unarchived.
-8. **openspec** (if `openspec/` exists): one issue per change — `$GT open … --openspec <name>`
+10. **openspec** (if `openspec/` exists): one issue per change — `$GT open … --openspec <name>`
    *before* writing the proposal; `$GT adopt-openspec --model … --effort …` backfills active
    changes. Archive the change, merge the PR, then close the issue.
-9. **Plain `gh` fallback** if the helper is missing: keep the same data by hand (model/effort
-   table, CI stats, links) in one comment; never skip the issue.
+11. **Plain `gh` fallback** if the helper is missing: keep the same data by hand (model/effort
+   table, CI stats, links) in one comment; never skip the issue. Weekly `digest`/`audit` (repo-settings workflow) flags stale
+   issues, branches without an issue and openspec changes without one.
 
 ## Project Overview
 
